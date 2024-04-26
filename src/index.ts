@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	type CSSProperties,
+} from "react";
 import findNearestClickableElement from "./utils/find-nearest-clickable-element";
 import getLiveCursorPosition from "./utils/get-live-cursor-position";
 import calculateNextPosition from "./utils/calculate-next-position";
@@ -12,7 +18,7 @@ function simulateClick({ x, y }: { x: number; y: number }) {
 	if (element instanceof HTMLElement) return element.click();
 }
 
-export default function useVirtualCursor({
+export function useVirtualCursor({
 	moveMultiplier = 1,
 }: { moveMultiplier?: number }) {
 	const cursorRef = useRef<HTMLDivElement>(null);
@@ -84,5 +90,12 @@ export default function useVirtualCursor({
 		}
 	}, [position]);
 
-	return { cursorRef, position, setPosition, canInteract, cursorDimensions };
+	const suggestedStyles: CSSProperties = {
+		position: "absolute",
+		zIndex: 9999,
+		left: `${position.x}px`,
+		top: `${position.y}px`,
+	};
+
+	return { cursorRef, position, canInteract, suggestedStyles };
 }
